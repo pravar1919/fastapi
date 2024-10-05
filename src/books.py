@@ -90,7 +90,7 @@ async def update_book(book_id: int, book_data: BookUpdate) -> dict:
     return book[0]
 
 
-@app.delete('/book/{id}')
+@app.delete('/book/{id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_book(id: int):
     book = list(filter(lambda x: x['id'] == id, books_data))
     if not book:
@@ -99,4 +99,4 @@ async def delete_book(id: int):
             detail="Book Not found"
         )
     books_data.remove(book[0])
-    return {"detail": "Book deleted..."}
+    return {}
