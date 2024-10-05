@@ -1,8 +1,6 @@
-from fastapi import FastAPI, Header
+from fastapi import FastAPI
 from .books.routes import book_router
 from .demo.routers import demo_router
-from typing import Optional
-from pydantic import BaseModel
 
 version = "v1"
 
