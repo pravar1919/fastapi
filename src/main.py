@@ -45,18 +45,20 @@ We can also access all the headers in FastAPI using Header in fastapi module
 '''
 
 
-@app.get('/get_headers')
+@app.get('/get_headers', status_code=200)
 async def get_headers(
     # Each headers can be accessed here using lowercase of that header
     accept: str = Header(None),
-    request_url: str = Header(None),
     content_type: str = Header(None),
-    x_custom_jwt: str = Header(None)
+    x_custom_jwt: str = Header(None),
+    user_agent: str = Header(None),
+    host: str = Header(None)
 ):
     request_headers = {}
     request_headers["Accept"] = accept
-    request_headers["Request URL"] = request_url
     request_headers["Content Type"] = content_type
     request_headers["x_custom_jwt"] = x_custom_jwt
+    request_headers["User Agent"] = user_agent
+    request_headers["Host"] = host
 
     return request_headers
