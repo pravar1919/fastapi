@@ -1,71 +1,25 @@
-from fastapi import FastAPI, status
-from pydantic import BaseModel
+from fastapi import APIRouter, status
 from fastapi.exceptions import HTTPException
-
+from .books_data import books_data
+from .schema import BookModel, BookUpdate
 from typing import List
 
-app = FastAPI()
-
-books_data = [
-    {
-        "id": 1,
-        "title": "book1",
-        "author": "author1",
-        "date": "2021-01-01"
-    },
-    {
-        "id": 2,
-        "title": "book2",
-        "author": "author2",
-        "date": "2021-02-01"
-    },
-    {
-        "id": 3,
-        "title": "book3",
-        "author": "author3",
-        "date": "2021-03-01"
-    },
-    {
-        "id": 4,
-        "title": "book4",
-        "author": "author4",
-        "date": "2021-04-01"
-    },
-    {
-        "id": 5,
-        "title": "book5",
-        "author": "author5",
-        "date": "2021-05-01"
-    },
-]
+book_router = APIRouter()
 
 
-class BookModel(BaseModel):
-    id: int
-    title: str
-    author: str
-    date: str
-
-
-class BookUpdate(BaseModel):
-    title: str
-    author: str
-    date: str
-
-
-@app.get('/books', response_model=List[BookModel], status_code=status.HTTP_200_OK)
+@book_router.get('/', response_model=List[BookModel], status_code=status.HTTP_200_OK)
 async def get_books():
     return books_data
 
 
-@app.post('/books', status_code=status.HTTP_201_CREATED)
+@book_router.post('/', status_code=status.HTTP_201_CREATED)
 async def create_book(book_data: BookModel) -> dict:
     new_book = book_data.model_dump()
     books_data.append(new_book)
     return new_book
 
 
-@app.get('/book/{id}', response_model=List[BookModel])
+@book_router.get('/{id}', response_model=List[BookModel])
 async def get_book(id: int) -> dict:
     book = list(filter(lambda x: x['id'] == id, books_data))
     if not book:
@@ -76,7 +30,7 @@ async def get_book(id: int) -> dict:
     return book
 
 
-@app.put('/book/{book_id}')
+@book_router.put('/{book_id}')
 async def update_book(book_id: int, book_data: BookUpdate) -> dict:
     book = list(filter(lambda x: x['id'] == book_id, books_data))
     if not book:
@@ -90,7 +44,7 @@ async def update_book(book_id: int, book_data: BookUpdate) -> dict:
     return book[0]
 
 
-@app.delete('/book/{id}', status_code=status.HTTP_204_NO_CONTENT)
+@book_router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_book(id: int):
     book = list(filter(lambda x: x['id'] == id, books_data))
     if not book:

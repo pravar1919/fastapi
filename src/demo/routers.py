@@ -1,22 +1,22 @@
-from fastapi import FastAPI, Header
+from fastapi import APIRouter, Header
 from typing import Optional
-from pydantic import BaseModel
+from .schema import BookModel
 
-app = FastAPI()
+demo_router = APIRouter()
 
 
-@app.get('/')
+@demo_router.get('/')
 async def home() -> dict:
     return {"Hello": "world"}
 
 
-@app.get('/greet/{name}')
+@demo_router.get('/greet/{name}')
 def greet_name(name: str, age: int) -> dict:
     return {"Hello": f"world {name}", "age": age}
 
 
 # making parameter optional using typing module
-@app.get('/hello')
+@demo_router.get('/hello')
 async def hello_name(age: Optional[int] = 0, name: Optional[str] = None) -> dict:
     return {"Hello": f"world {name}", "age": age}
 
@@ -27,12 +27,7 @@ For that we need to verify our data using pydantic BaseModel
 '''
 
 
-class BookModel(BaseModel):
-    title: str
-    author: str
-
-
-@app.post('/create_book')
+@demo_router.post('/create_book')
 async def create_book(book_data: BookModel):
     return {
         "title": book_data.title,
@@ -45,7 +40,7 @@ We can also access all the headers in FastAPI using Header in fastapi module
 '''
 
 
-@app.get('/get_headers', status_code=200)
+@demo_router.get('/get_headers', status_code=200)
 async def get_headers(
     # Each headers can be accessed here using lowercase of that header
     accept: str = Header(None),
