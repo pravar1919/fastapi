@@ -20,3 +20,12 @@ class UserCreateModel(BaseModel):
     first_name: str | None = None
     last_name: str | None = None
     password: str = Field(min_length=6)
+
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
+
+class Token(BaseModel):
+    access: str

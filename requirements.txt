@@ -4,3 +4,4 @@ pydantic-settings # to manage env variables in fastapi
 sqlmodel
 alembic
 passlib
+pyjwt
