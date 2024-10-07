@@ -3,6 +3,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlalchemy.orm import sessionmaker
 from src.config import Config
+from typing import AsyncContextManager, AsyncGenerator, AsyncIterator
 
 
 engine = AsyncEngine(
@@ -22,7 +23,7 @@ async def initdb():
 
 
 # this is to create session of the engine to use across the project
-async def get_sessions() -> AsyncSession:
+async def get_sessions() -> AsyncIterator[AsyncGenerator[int, None]]:
     Session = sessionmaker(
         bind=engine,
         class_=AsyncSession,
