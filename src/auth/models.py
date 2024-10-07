@@ -19,6 +19,7 @@ class User(SQLModel, table=True):
     first_name: str = Field(nullable=True)
     last_name: str = Field(nullable=True)
     is_verified: bool = Field(default=False)
+    password: str = Field(exclude=True)
     created_at: datetime = Field(
         sa_column=Column(
             pg.TIMESTAMP,
