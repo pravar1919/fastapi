@@ -2,3 +2,5 @@ fastapi[standard]
 asyncpg
 pydantic-settings # to manage env variables in fastapi
 sqlmodel
+alembic
+passlib
