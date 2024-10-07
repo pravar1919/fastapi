@@ -10,3 +10,26 @@ For database connection
 - There is a keyword 'yeild',
   - everyting above yield executed when the server is started.
   - everyting below yield executed when the server is stopped.
+
+For Migration:
+
+- Alembic is used for migrating the tables in FastAPI.
+- For that have to create a migration environment, which track the changes in the database using a file, which tracks all the changes in the structure of the database.
+
+```
+alembic init -t async migrations
+```
+
+- This commands create a migration folder and ini file in the root of the folder which tracks the version and migrations for the project.
+
+Command to do migration
+
+```
+alembic revision --autogenerate -m "initial migration"
+```
+
+Command to migrate
+
+```
+alembic upgrade head
+```
