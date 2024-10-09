@@ -7,8 +7,8 @@ class User(BaseModel):
     id: uuid.UUID
     username: str
     email: str
-    first_name: str | None = None
-    last_name: str | None = None
+    first_name: str
+    last_name: str
     password: str = Field(exclude=True)
     created_at: datetime
     updated_at: datetime
@@ -17,8 +17,8 @@ class User(BaseModel):
 class UserCreateModel(BaseModel):
     username: str = Field(max_length=8)
     email: str
-    first_name: str | None = None
-    last_name: str | None = None
+    first_name: str
+    last_name: str
     password: str = Field(min_length=6)
 
 
