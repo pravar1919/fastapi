@@ -17,7 +17,7 @@ engine = AsyncEngine(
 # this is to create tables at the runtime
 async def initdb():
     async with engine.begin() as conn:
-        from src.books.models import Book
+        from src.db.models import Book
 
         await conn.run_sync(SQLModel.metadata.create_all)
 
