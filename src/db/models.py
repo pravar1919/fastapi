@@ -45,3 +45,19 @@ class Book(SQLModel, table=True):
 
     def __str__(self):
         return f"<Book {self.title}>"
+
+
+class Reviews(SQLModel, table=True):
+    __tablename__ = "reviews"
+    id: uuid.UUID = Field(sa_column=Column(
+        pg.UUID, nullable=False, primary_key=True, default=uuid.uuid4
+    ))
+    rating: int = Field(lt=5)
+    review_text: str
+    user_id: Optional[uuid.UUID] = Field(default=None, foreign_key="users.id")
+    book_id: Optional[uuid.UUID] = Field(default=None, foreign_key="book.id")
+    created_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
+    update_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
+
+    def __str__(self):
+        return f"<Review {self.book_id} by {self.user_id}>"
