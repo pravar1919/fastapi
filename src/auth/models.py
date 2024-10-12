@@ -1,7 +1,9 @@
-from sqlmodel import SQLModel, Field, Column
+from sqlmodel import SQLModel, Field, Column, Relationship
 import sqlalchemy.dialects.postgresql as pg
 from datetime import datetime
 import uuid
+from src.books import models
+from typing import List
 
 
 class User(SQLModel, table=True):
@@ -20,6 +22,9 @@ class User(SQLModel, table=True):
     password: str = Field(exclude=True)
     created_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
     updated_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
+    books: List["models.Book"] = Relationship(
+        back_populates="user", sa_relationship_kwargs={"lazy": "selectin"}
+    )
 
     def __str__(self) -> str:
         return f"<User {self.username}>"

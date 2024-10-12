@@ -13,6 +13,14 @@ class BookService:
         if not result:
             return None
         return result.all()
+    
+    async def get_user_books(self, user_id, session):
+        statement = select(Book).where(Book.user_id==user_id).order_by(desc(Book.created_at))
+
+        result = await session.exec(statement)
+        if not result:
+            return None
+        return result.all()
 
     async def get_book(self, id: str, session: AsyncSession):
         statement = select(Book).where(Book.id == id)
@@ -22,13 +30,14 @@ class BookService:
             return None
         return result.first()
 
-    async def create_book(self, data: BookCreateModel, session: AsyncSession):
+    async def create_book(self, data: BookCreateModel, user_id: str, session: AsyncSession):
         book_dict = data.model_dump()
         print(book_dict)
 
         book_obj = Book(**book_dict)
         book_obj.published_date = datetime.strptime(
             book_dict['published_date'], '%Y-%m-%d')
+        book_obj.user_id = user_id
         session.add(book_obj)
         await session.commit()
         return book_obj
