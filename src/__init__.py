@@ -25,7 +25,8 @@ app = FastAPI(
     title="Book Crud",
     description="Book Review Service Crud",
     version=version,
-    lifespan=life_span
+    # removed this lifespan for creating db, will use alembic.
+    # lifespan=life_span 
 )
 
 
