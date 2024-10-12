@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from src.db.main import get_sessions
 
 from .dependencies import RefreshTokenBearer, AccessTokenBearer, get_current_user, RoleChecker
-from .schemas import Token, User, UserCreateModel, UserLogin
+from .schemas import Token, User, UserCreateModel, UserLogin, UserBooksModel
 from .service import UserService
 from .utils import create_access_token, decode_access_token, verify_password
 from src.db.redis import add_jti_to_blocklist
@@ -78,7 +78,7 @@ async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer(
     )
 
 
-@auth_router.get('/me', response_model=User, dependencies=[role_checker])
+@auth_router.get('/me', response_model=UserBooksModel, dependencies=[role_checker])
 async def get_current_user(user = Depends(get_current_user)):
     return user
 

@@ -14,6 +14,8 @@ class User(BaseModel):
     password: str = Field(exclude=True)
     created_at: datetime
     updated_at: datetime
+
+class UserBooksModel(User):
     books: List[schema.BookModel]
 
 
