@@ -1,5 +1,5 @@
 from .schemas import UserCreateModel
-from .models import User
+from src.db.models import User
 from .utils import generate_password_hash, verify_password
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel import select

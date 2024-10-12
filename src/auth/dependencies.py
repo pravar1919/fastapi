@@ -8,7 +8,7 @@ from src.db.redis import add_jti_to_blocklist, token_in_blocklist
 from src.db.main import get_sessions
 from sqlmodel.ext.asyncio.session import AsyncSession
 from .service import UserService
-from .models import User
+from src.db.models import User
 from typing import List
 
 user_service = UserService()
