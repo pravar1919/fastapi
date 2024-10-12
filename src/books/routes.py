@@ -5,14 +5,15 @@ from .schema import BookModel, BookCreateModel, BookUpdate
 from src.db.main import get_sessions
 from src.books.service import BookService
 from typing import List
-from src.auth.dependencies import AccessTokenBearer
+from src.auth.dependencies import AccessTokenBearer, RoleChecker
 
 book_router = APIRouter()
 book_service = BookService()
 security = AccessTokenBearer()
+role_checker = Depends(RoleChecker(['admin', 'user']))
 
 
-@book_router.get("/", response_model=List[BookModel], status_code=status.HTTP_200_OK)
+@book_router.get("/", response_model=List[BookModel], status_code=status.HTTP_200_OK, dependencies=[role_checker])
 async def get_books(
     session: AsyncSession = Depends(get_sessions), user_details=Depends(security)
 ):

@@ -6,7 +6,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException, status
 from src.db.main import get_sessions
 
-from .dependencies import RefreshTokenBearer, AccessTokenBearer
+from .dependencies import RefreshTokenBearer, AccessTokenBearer, get_current_user, RoleChecker
 from .schemas import Token, User, UserCreateModel, UserLogin
 from .service import UserService
 from .utils import create_access_token, decode_access_token, verify_password
@@ -14,6 +14,7 @@ from src.db.redis import add_jti_to_blocklist
 
 auth_router = APIRouter()
 user_service = UserService()
+role_checker = Depends(RoleChecker(['admin', 'user']))
 
 
 @auth_router.post('/signup', response_model=User, status_code=status.HTTP_201_CREATED)
@@ -44,7 +45,7 @@ async def login_user(data: UserLogin, session: AsyncSession = Depends(get_sessio
             detail="Either email or password is incorrect."
         )
     access = create_access_token(
-        data={"email": user.email, "id": str(user.id)}
+        data={"email": user.email, "id": str(user.id), "role": user.role}
     )
     refresh = create_access_token(
         data={"email": user.email, "id": str(user.id)},
@@ -77,6 +78,10 @@ async def get_new_access_token(token_details: dict = Depends(RefreshTokenBearer(
     )
 
 
+@auth_router.get('/me', dependencies=[role_checker])
+async def get_current_user(user = Depends(get_current_user)):
+    return user
+
 @auth_router.get('/logout')
 async def revoke_token(token_detail: dict = Depends(AccessTokenBearer())):
     jti = token_detail['jti']
@@ -89,3 +94,5 @@ async def revoke_token(token_detail: dict = Depends(AccessTokenBearer())):
         },
         status_code= status.HTTP_200_OK
     )
+
+
