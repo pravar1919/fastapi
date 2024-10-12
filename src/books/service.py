@@ -32,7 +32,6 @@ class BookService:
 
     async def create_book(self, data: BookCreateModel, user_id: str, session: AsyncSession):
         book_dict = data.model_dump()
-        print(book_dict)
 
         book_obj = Book(**book_dict)
         book_obj.published_date = datetime.strptime(
