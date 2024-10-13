@@ -1,6 +1,7 @@
 from typing import Any, Callable
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
+from fastapi import FastAPI, status
 
 
 class BooklyException(Exception):
@@ -33,3 +34,14 @@ def create_exception_handler(
 
     return exception_handler
 
+def register_all_errors(app: FastAPI):
+    app.add_exception_handler(
+        InvalidToken,
+        create_exception_handler(
+            status_code=status.HTTP_403_FORBIDDEN,
+            content={
+                "error": "This token is invalid or expired.",
+                "resolution": "Please get a new token."
+            }
+        )
+    )
