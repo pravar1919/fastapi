@@ -7,15 +7,31 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from src.db.main import get_sessions
 
 from .dependencies import RefreshTokenBearer, AccessTokenBearer, get_current_user, RoleChecker
-from .schemas import Token, User, UserCreateModel, UserLogin, UserBooksModel
+from .schemas import Token, User, UserCreateModel, UserLogin, UserBooksModel, EmailModel
 from .service import UserService
 from .utils import create_access_token, decode_access_token, verify_password
 from src.db.redis import add_jti_to_blocklist
+from src.email import create_message, mail
 
 auth_router = APIRouter()
 user_service = UserService()
 role_checker = Depends(RoleChecker(['admin', 'user']))
 
+
+@auth_router.post("/send_mail")
+async def send_mail(emails: EmailModel):
+    emails = emails.addresses
+
+    html = "<h1>Welcome to the app</h1>"
+    subject = "Welcome to our app"
+
+    message = create_message(recipients=emails,subject=subject, body=html)
+
+    await mail.send_message(message)
+
+    # send_email.delay(emails, subject, html)
+
+    return {"message": "Email sent successfully"}
 
 @auth_router.post('/signup', response_model=User, status_code=status.HTTP_201_CREATED)
 async def create_user_account(data: UserCreateModel, session: AsyncSession = Depends(get_sessions)):

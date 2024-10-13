@@ -34,3 +34,7 @@ class UserLogin(BaseModel):
 
 class Token(BaseModel):
     access: str
+
+
+class EmailModel(BaseModel):
+    addresses : List[str]
