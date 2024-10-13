@@ -8,8 +8,7 @@ from typing import AsyncContextManager, AsyncGenerator, AsyncIterator
 
 engine = AsyncEngine(
     create_engine(
-        url=Config.DATABASE_URL,
-        echo=True
+        url=Config.DATABASE_URL
     )
 )
 
