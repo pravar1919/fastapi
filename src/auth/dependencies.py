@@ -9,6 +9,7 @@ from src.db.main import get_sessions
 from sqlmodel.ext.asyncio.session import AsyncSession
 from .service import UserService
 from src.db.models import User
+from src.errors import InvalidToken, RevokedToken
 from typing import List
 
 user_service = UserService()
@@ -24,21 +25,23 @@ class TokenBearer(HTTPBearer):
 
         token_data = decode_access_token(creds.credentials)
         if not token_data:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail={
-                    "error": "This token is invalid or expired.",
-                    "resolution": "Please get a new token."
-                }
-            )
+            raise InvalidToken()
+            # raise HTTPException(
+            #     status_code=status.HTTP_403_FORBIDDEN,
+            #     detail={
+            #         "error": "This token is invalid or expired.",
+            #         "resolution": "Please get a new token."
+            #     }
+            # )
         if not await token_in_blocklist(token_data['jti']):
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail={
-                    "error": "This token is invalid or has been revoked.",
-                    "resolution": "Please get a new token."
-                },
-            )
+            raise RevokedToken()
+            # raise HTTPException(
+            #     status_code=status.HTTP_403_FORBIDDEN,
+            #     detail={
+            #         "error": "This token is invalid or has been revoked.",
+            #         "resolution": "Please get a new token."
+            #     },
+            # )
 
         self.verify_token_data(token_data) # just to check if it is using in the subclasses.
         return token_data

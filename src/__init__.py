@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 
 from src.db.main import initdb
 
@@ -6,6 +6,7 @@ from .auth.routers import auth_router
 from .books.routes import book_router
 from .demo.routers import demo_router
 from .reviews.routers import review_router
+from .errors import (BooklyException, InvalidToken, RevokedToken, create_exception_handler)
 
 from contextlib import asynccontextmanager
 
@@ -30,7 +31,16 @@ app = FastAPI(
     # lifespan=life_span 
 )
 
-
+app.add_exception_handler(
+    InvalidToken,
+    create_exception_handler(
+        status_code=status.HTTP_403_FORBIDDEN,
+        content={
+            "error": "This token is invalid or expired.",
+            "resolution": "Please get a new token."
+        }
+    )
+)
 app.include_router(demo_router, tags=["Demo"])
 app.include_router(auth_router, prefix=f"/api/{version}/auth", tags=["Auth"])
 app.include_router(book_router, prefix=f"/api/{version}/books", tags=["Books"])
