@@ -17,7 +17,7 @@ For Migration:
 - For that have to create a migration environment, which track the changes in the database using a file, which tracks all the changes in the structure of the database.
 
 ```
-alembic init -t async migrations
+uv run alembic init -t async migrations
 ```
 
 - This commands create a migration folder and ini file in the root of the folder which tracks the version and migrations for the project.
@@ -25,11 +25,11 @@ alembic init -t async migrations
 Command to do migration
 
 ```
-alembic revision --autogenerate -m "initial migration"
+uv run alembic revision --autogenerate -m "initial migration"
 ```
 
 Command to migrate
 
 ```
-alembic upgrade head
+uv run alembic upgrade head
 ```

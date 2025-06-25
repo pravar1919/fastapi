@@ -19,3 +19,7 @@ To run using uvicorn
 ```
 uvicorn main:app
 ```
+
+```
+uv run fastapi dev src
+```

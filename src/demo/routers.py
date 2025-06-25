@@ -11,8 +11,8 @@ async def home() -> dict:
 
 
 @demo_router.get('/greet/{name}')
-def greet_name(name: str, age: int) -> dict:
-    return {"Hello": f"world {name}", "age": age}
+def greet_name(name: str) -> dict:
+    return {"Hello": f"world {name}"}
 
 
 # making parameter optional using typing module
