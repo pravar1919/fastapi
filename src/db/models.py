@@ -1,7 +1,7 @@
 import uuid
 from datetime import date, datetime
 from typing import List, Optional
-
+from enum import Enum
 import sqlalchemy.dialects.postgresql as pg
 from sqlmodel import Column, Field, Relationship, SQLModel
 
@@ -69,3 +69,20 @@ class Reviews(SQLModel, table=True):
 
     def __str__(self):
         return f"<Review {self.book_id} by {self.user_id}>"
+
+
+class IssueStatus(str, Enum):
+    IN_PROGRESS = "in_progress"
+    RESOLVED = "resolved"
+    HOLD = "HOLD"
+
+class Issue(SQLModel, table=True):
+    __tablename__ = "issue"
+    id: uuid.UUID = Field(
+        sa_column=Column(pg.UUID, nullable=False, primary_key=True, default=uuid.uuid4)
+    )
+    title: str
+    description: str = Field(sa_column=Column(pg.TEXT))
+    status: str = Field(default=IssueStatus.IN_PROGRESS)
+    created_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
+    update_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=datetime.now))
